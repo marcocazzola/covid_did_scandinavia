@@ -1,2 +1,2 @@
-# covid_did_scandinavia
-Estimating the causal effect of restrictive policies such as workplace closures and gathering restrictions on Covid-19 daily deaths and cases: evidence from the first wave in Denmark and Sweden
+# Covid DiD in Scandinavia
+The DiD approach “makes use of naturally occurring phenomena or policy changes that may induce some form of randomization across individuals in the eligibility of the assignment to the treatment” (Blundell et al., 2009). In this paper, we will use data from Denmark (treated) and Sweden (control) to estimate the causal effect of restrictive policies such as gathering restrictions and workplace closures on Covid-19 new daily deaths and cases. 
