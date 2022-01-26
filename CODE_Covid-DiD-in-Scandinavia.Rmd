@@ -1,0 +1,736 @@
+---
+title: "Using Difference-in-Differences to identify the causal effect of NPIs during Covid-19: evidence from Denmark and Sweden"
+author: "Marta Magnani (961071) - Marco Cazzola (964573)"
+header-includes:
+   - \usepackage{multirow} 
+   - \usepackage{array}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+\begin{abstract}
+During the first wave of Covid-19, not all European countries adopted the same restrictive strategies and policies. An interesting case is the one regarding Sweden, which decided to not impose severe confinement measures and to rely on community trust and individual decision-making. Conversely, confining Scandinavian countries such as Denmark immediately introduced severe non-pharmaceutical interventions (NPIs) to tackle the emergency. In this paper, we exploit policy variation between Denmark and Sweden to investigate the causal effect of introducing NPIs, namely workplace closing and gatherings restrictions, on the 7-day moving average of deaths and cases. Our Difference-in-Differences (DiD) models provide evidence that during the first Covid-19 wave such policies have been significantly effective and persistent over time in curtailing the curve of deaths and cases in Denmark, as compared to the Swedish situation.
+\end{abstract}
+
+# I. Introduction
+
+After more than two years from the beginning of the Covid-19 pandemic, the emergency is still not giving any sign of surrender. Although more than 4 billion people have received at least one vaccine dose across the world (World Health Organization, 2021), the variants are spreading and many countries are evaluating the best strategies to prevent other dangerous tides. Significant differences in tackling the Covid-19 emergency have been registered across Europe that, with 1,493,361 deaths and 81,958,757 total cases as of December 20, 2021 (Our World in Data, 2021), represents one of the most hit locations in the world. Once the pandemic started and risks and consequences began spreading, some European governments decided to immediately intervene with strict containment measures (e.g. lockdowns, travel restrictions, etc.) whereas others decided to wait. After two years from the beginning, Europe is today becoming the epicenter of another Covid tide and so burdening the health, economic, and political governments agendas. 
+
+At the beginning of the emergency, the responses to Covid-19 have been generally characterized by the combination of non-pharmaceutical interventions (NPIs) (e.g. face masking, physical distancing, restrictions of movement and social gatherings) with testing and contact tracing (Müller et al., 2021). It has been widely discussed in the recent literature that non-pharmaceutical strategies have significantly contributed to lightening the pressure on the hospital sector and to benefit in terms of healthcare expenditure and mortality. In particular, some recent papers use Difference-in-Differences methods to prove that non-pharmaceutical interventions considerably contributed to reducing interactions, infections, and deaths (Askim et al., 2020; Conyon et al., 2020; Juranek et al., 2021). The ex-post evaluation of the NPIs efficacy represents a strategic instrument for understanding their potential replicability in the current period and leading to more conscious intervention measures. Indeed, as highlighted in Goodman-Bacon and Marcus (2020), “understanding which non-pharmaceutical interventions contain the pandemic is therefore crucial for balancing public health and economic and social costs”. 
+
+Therefore, driven by the desire of adding knowledge to the existing NPIs efficacy studies and by the interest in the impact of the heterogeneity of European containment policies, we decided to test the causal effect of the NPIs on Covid-19 cases and deaths in Sweden and Denmark. The emergency management of these Scandinavian countries has attracted our attention because, despite all their similarities in terms of culture, climate, healthcare, and institutional framework (Juranek et al., 2021), it has resulted in different strategies and timing of intervention. In particular, Sweden has earned the fame of having been one of the slowest European countries in taking strict confinement measures, whereas Denmark promptly tackled the emergency as soon as the risks were evident. Except for banning large assemblies of people, Sweden avoided strict regulations such as job places closure or school closing, whereas Denmark was similar to other European countries with closed schools, businesses, and strict travel restrictions since the middle of March 2020. 
+
+The purpose of the article is thus to apply a Difference-in-Differences (DiD) framework to estimate the causal effect of NPIs (especially workplace closing and gatherings restrictions), which took place in Denmark but not in Sweden, on the 7-day moving average of daily Covid-19 deaths and cases, normalized per million population. In particular, the period considered covers February 26 - June 3, 2020, which comprehends the first wave of Covid-19 in Scandinavia. The DiD approach has been chosen because it “makes use of naturally occurring phenomena or policy changes that may induce some form of randomization across individuals in the eligibility of the assignment to the treatment” (Blundell et al., 2009). In this setting, the job places closing and gathering restrictions contribute to naturally creating a reasonable control group (Sweden) and a reasonable treatment group (Denmark) through which it is possible to evaluate the efficacy of the policy. We found evidence that such policies were significantly effective in curbing down the curve of deaths and cases in Denmark, as compared to the Swedish situation. Moreover, we found such effects to be particularly persistent over time. 
+
+In the current study, the institutional background of Sweden and Denmark was initially presented to enhance the main literature-based aspects that made these two countries comparable and reasonable candidates for conducting a DiD method. Afterwards, the data used for conducting the DiD analysis were introduced and so the analytical framework that allowed to estimate the causal effect of NPIs.
+
+# II. Institutional background
+
+The different responses to the Covid-19 crisis that occurred in neighbouring countries such as Sweden and Denmark attracted our attention because they are generally known for having nearly identical state-society relations and political-administrative systems (Plümper et al., 2020). These aspects contributed to considering them as optimal candidates for a DiD application, because in a such setting the only difference between the treated and control groups is supposed to be the treatment itself. In this DiD analysis, Sweden served as a counterfactual to Denmark because it was the only country that has not applied strict containment measures. Before defining the model, it’s crucial to provide a comprehensive comparison between the two Scandinavian countries in terms of economics, healthcare and demographic characteristics, to better understand their similarities and differences. 
+
+Table \ref{table:1} displays some key characteristics of Sweden and Denmark. Sweden has almost twice the population of Denmark, whereas Denmark presents a significantly higher population density. This is meaningful from the moment that, in absence of any kind of non-pharmaceutical intervention, epidemics are likely to spread faster in countries with a higher population density (Juranek et al., 2021). Nonetheless, characteristics such as population and population density were considered *fixed* in the model estimation, so that such differences are captured by state-specific fixed effects.
+
+Another point worth mentioning is that the two economies are both small with similar Gross Domestic Product (GDP) per capita measured at constant Purchasing Power Parity (PPP) US dollar. Both countries have an analogous life expectancy and spend a similar percentage of their GDP on healthcare. Denmark has more medical capacity in terms of hospital and ICU beds per 1000 inhabitants, whereas Sweden has a greater number of general medical practitioners and nursing professionals, but the difference remains minimal. Regarding susceptibility to severe consequences of Covid-19, we saw that both countries have the same share of the population over the age of 65 years, and it is now well established that this virus causes worse outcomes and a higher mortality rate in older adults (Shahid et al., 2020). Finally, Sweden had the highest number of confirmed cases per 1mln inhabitants at the end of our sample period (June 3, 2020). 
+\newpage 
+
+Further similarities in the Scandinavian healthcare systems have been documented extensively also in the health economics literature (e.g., Kristiansen and Pedersen 2000; Lyttkens et al. 2016), where Nordic countries (Sweden, Denmark, Finland, Norway, Iceland) are generally known for displaying healthier behaviour than the Organization for Economic Co-operation and Development (OECD) average. Consequently, this provided evidence supports our choice of comparing these two countries.
+```{=latex}
+\setlength{\arrayrulewidth}{1.2pt}
+\begin{center}
+\begin{table}[h!]
+\begin{tabular}{ p{8cm} >{\centering}m{3.6cm} >{\centering\arraybackslash}m{3.6cm} } 
+ \hline \\
+ \textbf{Country characteristic} & \textbf{Sweden} & \textbf{Denmark} \\[8pt]
+ \hline \\[3pt]
+ Population (2019) & 10,230,185 & 5,806,081 \\[5pt]
+ Population density per $km^2$ (2020) & 25.419 & 145.785 \\[5pt]  
+ GDP per capita PPP, current international \$ (2020) & \$ 54,929.527 & \$ 60,551.567 \\[5pt] 
+ Life expectancy at birth, years (2020) & 80.7 & 79.6 \\[5pt] 
+ Healthcare spending, \% GDP (2020) & 11.4 & 10.6 \\[5pt] 
+ Hospital beds, per 1000 inhabitants (2019) & 2.1 & 2.6 \\[5pt]
+ICU beds, per 1000 inhabitants (2020) & 1.9 & 2.5 \\[5pt]
+Gen. medical practitioners, per 1000 inhab. (2018) & 4.3 & 4.2 \\[5pt]
+Nursing professionals, per 1000 inhabitants (2018) & 10.8 & 10.1 \\[5pt]
+Share of aged 65+ (2020) & 20.1\% & 20\% \\[5pt]
+Date first 100 cases & March 6, 2020 & March 9, 2020 \\[5pt]
+Cumulative COVID deaths per mln ppl. on June 3 & 447.04 & 99.77 \\[5pt]
+Cumulative COVID cases per mln ppl. on June 3 & 4,060.57 & 2,024.84 \\[8pt]
+ \hline
+\end{tabular}
+\caption{Main key characteristics of Sweden and Denmark. The information inside comes from different European and international online data sources (OECD, World Bank, Our World in Data).}
+\label{table:1}
+\vspace{-10mm}
+\end{table}
+\end{center}
+```
+
+
+# III. Policy response to Covid-19
+
+As previously stated,  the emergency management of Sweden and Denmark has attracted our attention because, despite all their similarities in terms of culture, climate, healthcare, and institutional framework, it has resulted in different strategies and timing of intervention. While Denmark followed to some extent the European trend of adopting strict non-pharmaceutical interventions (e.g. closing of workplaces and lockdowns), the Swedish government was less severe and opted for introducing measures mainly based on trust and individual responsibility. Regarding this, the Swedish containment strategy was presented to Nature by the epidemiologist Anders Tegnell, who declared in April 2020 that “as a society, we are more into nudging: continuously reminding people to use measures, improving measures where we see day by day that they need to be adjusted. We do not need to close down everything completely because it would be counterproductive” (Paterlini, 2020). In general, the Swedish scheme to contain Covid-19 spread was based on the voluntary social distancing and self-restraint of citizens, who were accustomed to receive daily briefings and instructions concerning self-protection techniques from the Swedish Public Health Agency and press conferences held by state epidemiologists, the Prime Minister, and other government representatives (Yan et al., 2020). 
+
+To make more intuitive the comparison between the different policies adopted by these two countries during the first wave, we summarized the containment measures and the dates of their introduction based on the Oxford COVID-19 Government Response Tracker (Table \ref{table:2}).
+
+\newpage
+
+```{=latex}
+\setlength{\arrayrulewidth}{1.2pt}
+\begin{center}
+\begin{table}[h!]
+\begin{tabular}{ p{8cm} >{\centering}m{3.6cm} >{\centering\arraybackslash}m{3.6cm} } 
+ \hline \\
+ \textbf{Measure} & \textbf{Sweden} & \textbf{Denmark} \\[8pt]
+ \hline \\[3pt]
+ School closing (some levels) & March 17 - & March 13 - \\[5pt]
+ School closing (all levels) & - & March 13 - April 14 \\[5pt]  
+ Workplace closing (only at some levels) & - & March 18 - \\[5pt] 
+ Restriction on gatherings & March 12 - & March 13 - \\[5pt] 
+ Restrictions on gatherings up to 10 ppl. & - & March 18 - \\[5pt] 
+ Close public transport & - & - \\[5pt]
+ Stay at home requirements & - & - \\[5pt]
+ Restrictions on internal movement & - & - \\[5pt]
+ International travel bans (for high-risk regions) & March 19 - & March 11 - \\[5pt]
+ International travel bans (total border closure) & - & March 14 - May 24 \\[5pt]
+ Stringency Index March 18 (0-100) & 41.67 & 72.22 \\[5pt]
+ Stringency Index April 1 (0-100) & 64.81 & 72.22 \\[5pt]
+ Stringency Index June 3 (0-100) & 64.81 & 60.19 \\[8pt]
+ \hline
+\end{tabular}
+\caption{Nationwide restrictions for the time period February 26 - June 3, 2020. An open-end means that the measure was in place at least until June 3, 2020. Source: Oxford COVID-19 Government Response Tracker.}
+\label{table:2}
+\vspace{-10mm}
+\end{table}
+\end{center}
+```
+
+The first main difference between the countries regards the **school and workplace closing** measures: Denmark closed all levels of schools (primary schools, kindergartens) and workplaces by March 13 and 18 respectively, whereas Sweden decided to implement only a “recommended” lockdown for workplaces and keeping some school levels open. However, Denmark also lifted the heavy closures of schools after April 14, following the same approach as Sweden. Since literature suggests that school closures had a limited (if null) impact on the Covid-19 spreading (Viner et al., 2020; Iwata et al., 2020; Wang et al., 2020), we decided to ignore this policy implementation in our causality study. Furthermore, the time window in which the two countries applied different school restrictions is very short and also the types of restrictions are very similar. Therefore, by ignoring school restrictions, we assume that much (if not all) of the observed causal effect can be attributed to workplace closure and gatherings restrictions, which are indeed the only two policies that substantially differed in the two countries.
+
+Another notable difference refers in fact to **gatherings restrictions**: while Sweden imposed no restrictions for gatherings under 10 people, Denmark forbade also these small assemblies on the same day the workplace closing was introduced (March 18). Furthermore, in both countries there were no mandatory measures in terms of **public transportation closure**, **stay at home requirements**, and **internal movement restrictions** (Table \ref{table:2}).
+
+The last relevant distinction regards **international travel bans**: while Denmark implemented a total border closure, Sweden applied a selected ban only for people coming from high-risk regions. We disregarded this policy from the current study because in the considered period both Sweden and Denmark experienced a sharp drop (close to 100%) in 2020 tourists arrivals, compared to 2019 (Fig. 1). So, even though the bans were slightly different, it can be argued that the effect on arrivals from abroad was comparable and the risk faced by the two countries was very similar. Moreover, while there is some evidence that a travel ban can delay the arrival of an infectious disease in a country by days or weeks, there is small evidence suggesting that such measure could eliminate the risk of the disease crossing borders in the long term (Errett et al., 2020). All of this, together with the fact that the two approaches were rather similar, led us to ignore this policy difference as well. 
+
+
+```{r, fig.height=4, fig.width=10}
+tour <- data.frame(Country = c('Denmark', 'Sweden'), 
+                   January = c(2, -1), 
+                   February = c(7, -5), 
+                   March = c(-66, -64), 
+                   April = c(-97, -91), 
+                   May = c(-96, -88), 
+                   June = c(-87, -88)) %>%
+  gather("Month", "Change", 2:7)
+tour$Month <- factor(tour$Month, levels=c('January', 'February', 'March',
+                                          'April', 'May', 'June'))
+
+ggplot(data=tour, aes(x=Month, y=Change, fill=Country)) +
+  geom_bar(stat="identity", position=position_dodge(), width=0.7, alpha=0.9) + theme_bw() +
+  labs(y = '% Change') + theme(plot.caption = element_text(hjust=0.5))
+```
+
+```{=latex}
+\emph{\textbf{Fig. 1}: Percentage change in international tourist arrivals: 2020 vs 2019 (Data source: UNWTO, 2021)}
+```
+
+```{=latex}
+\vspace{7mm}
+```
+
+Another interesting piece of information at the bottom of Table \ref{table:2} is the **Government Response Stringency Index**\footnote[1]{The Oxford COVID-19 Government Response Tracker (OxCGRT) collects systematic information on policy measures that governments have taken to tackle Covid-19. The Stringency Index is an aggregate score/composite measure based on 9 response indicators including school closures, workplace closures, and travel bans, rescaled to a value from 0 to 100 (100 = strictest response). The index records the strictness of ‘lockdown style’ policies that primarily restrict people’s behaviour and it is calculated using all ordinal containment and closure policy indicators, plus an indicator recording public information campaigns. (Source: Thomas et al., 2021)} created by Oxford University, measuring the overall level of strictness of the adopted measures. According to the data collected by Oxford COVID-19 Government Response Tracker, during the reference period of this paper (February 26 - June 3, 2020) Sweden mainly had a lower Stringency Index than Denmark, indicating an overall less strictness in the adopted measures (Fig. 2).
+
+```{=latex}
+\vspace{10mm}
+```
+
+```{r, echo=FALSE, include=FALSE}
+#Data import
+Sys.setlocale(category = "LC_ALL", locale = "english")
+dta <- read.csv("DiD_data.csv")
+  
+#Factorize countries and make dates
+dta$Time <- as.Date(dta$Time)
+dta$Country <- factor(dta$Country)
+
+#Plot
+ggplot(dta, aes(x=Time, y=stringency_index, color=Country)) +
+  geom_point(alpha=0.9, shape=23, size=0.8) + geom_line(alpha=0.9) + theme_bw() +
+  labs(y='Stringency Index') + theme(plot.caption = element_text(hjust=0.5))
+```
+
+```{r, fig.height=4, fig.width=10}
+#Plot
+ggplot(dta, aes(x=Time, y=stringency_index, color=Country)) +
+  geom_point(alpha=0.9, shape=23, size=0.8) + geom_line(alpha=0.9) + theme_bw() +
+  labs(y='Stringency Index') + theme(plot.caption = element_text(hjust=0.5))
+```
+
+```{=latex}
+\emph{\textbf{Fig. 2}: Stringency Index value (0-100) over the period Feb 26 - Jun 3, 2020 (Data source: OxCGRT, 2021)}
+```
+
+
+\newpage
+
+# IV. Data
+
+Information on daily Covid-19 deaths and cases in Sweden and Denmark covers the period from February 26 up to June 3, 2020. In particular, the data employed to perform the empirical investigation are drawn from the European Centre for Disease Prevention. In this study, the main two outcomes are the 7-day moving average of new daily Covid-19 cases and deaths. Despite the availability of daily data about Covid-19 cases and deaths, we opted for using only the 7-day moving average in the DiD implementation because it provides an average line over time and mitigates the daily fluctuations of deaths and cases. Since, as seen in the *Institutional background* section, the two countries have a rather different population size, such numbers has been normalized per million population.
+
+In order to distinguish between pre- and post-treatment periods, we used policies’ information from the Oxford COVID-19 Government Response Tracker, which reported March 18 as the first day when gatherings restrictions and workplace closing were applied in Denmark, but not in Sweden. We highlight that this difference in policy implementation persisted for the whole studied period (i.e. until June 3).
+
+Before diving into the discussion of the graphs, it is relevant to point out that data used for this paper's purpose were slightly adjusted. In particular, an anomalous increase in new daily cases was observed in Denmark, but not in Sweden, in the period from March 10 to March 14, 2020. Since this increase did not occur in the subsequent days (where the two curves kept on overlapping), we assumed this peak to be due to particularly noisy observations. To tackle this problem, we re-estimated the three central observations of this 5-days period using a linear trend. If we had used the original data, the estimated causal effect could have been biased by the abnormal "bump" that appears in Denmark's curve of cases before March 18 (Fig. 9, Appendix II). Nonetheless, the DiD estimates obtained with original data are reported in Appendix II. \
+Preliminary descriptive graphs for daily Covid-19 deaths and cases with 7-day moving average are presented below. 
+
+
+```{=latex}
+\vspace{5mm}
+```
+
+
+```{r, fig.height=4, fig.width=12}
+ggplot(dta, aes(x=Time,y=new_cases_per_million,color=Country)) +
+  geom_point(alpha=0.35) + geom_line(alpha=0.35) + theme_bw()+
+  labs(y='New cases per million') +
+geom_vline(xintercept = as.Date("2020-03-18"), linetype='dashed', color='blue', size=0.7) +
+  geom_vline(xintercept = as.Date("2020-04-01"), linetype='dashed', color='red', size=0.7) +
+  geom_vline(xintercept = as.Date("2020-04-08"), linetype='dashed', color='black', size=0.7) +
+  scale_x_continuous(breaks=as.Date(c('2020-03-01', '2020-03-18', '2020-04-01', 
+                                      '2020-04-08', '2020-05-01', '2020-06-01')), 
+                     labels=c('Mar', 'Mar18', 'Apr1', 'Apr8', 'May', 'Jun')) +
+  geom_line(aes(y=new_cases_per_million_smoothed, color=Country), size=1)
+```
+
+```{=latex}
+\emph{\textbf{Fig. 3}: Daily Covid-19 cases with 7-day moving average over the period Feb 26-Jun 3, 2020. The 7-day moving average of cases is represented by the scattered lines, whereas the daily cases by the faded ones. The blue vertical line corresponds to the policies introduction (March 18), the red vertical line two weeks later (April 1), and the black vertical line three weeks later (April 8). (Data source: ECDC, 2021)}
+```
+
+```{=latex}
+\vspace{5mm}
+```
+
+
+```{r, fig.height=4, fig.width=12}
+ggplot(dta, aes(x=Time,y=new_deaths_per_million,color=Country)) +
+  geom_point(alpha=0.35) + geom_line(alpha=0.35) + theme_bw()+
+  labs(y='New deaths per million') +
+geom_vline(xintercept = as.Date("2020-03-18"), linetype='dashed', color='blue', size=0.7) +
+  geom_vline(xintercept = as.Date("2020-03-25"), linetype='dashed', color='red', size=0.7) +
+  geom_vline(xintercept = as.Date("2020-04-01"), linetype='dashed', color='black', size=0.7) +
+  scale_x_continuous(breaks=as.Date(c('2020-03-01', '2020-03-18', '2020-03-25', 
+                                      '2020-04-01', '2020-05-01', '2020-06-01')), 
+                     labels=c('Mar', 'Mar18', 'Mar25', 'Apr1', 'May', 'Jun')) +
+  geom_line(aes(y=new_deaths_per_million_smoothed, color=Country), size=1)
+```
+
+
+```{=latex}
+\emph{\textbf{Fig. 4}: Daily Covid-19 deaths with 7-day moving average over the priod Feb 26-Jun 3, 2020. The 7-day moving average of deaths is represented by the scattered lines, whereas the daily deaths by the faded ones. The blue vertical line corresponds to the policies introduction (March 18), the red vertical line one week later (March 25), and the black vertical line two weeks later (April 1).
+(Data source: ECDC, 2021)}
+```
+
+```{=latex}
+\vspace{5mm}
+```
+
+Starting from the cases (Fig. 3), it is noticeable that the moving average curves had a similar behavior until little after April 8, where a neat divergence in the number of cases occurred. Sweden cases kept fluctuating and increasing for the entire considered period, whereas Denmark reached a peak around April 8 with an average of 57 daily cases per million and then sharply decreased. At the end of the considered time period (June 3), Sweden counted on average 61 new daily cases per million, whereas Denmark only 8 new daily cases per million. The behavior of these curves suggests that the effects of restrictive policies on cases are not identifiable right after the policy introduction, but later in time (approximately three weeks later). Furthermore, the clear divergence in the two scattered lines supports the idea that the strict NPIs adopted by Denmark contributed to reducing the spread of Covid-19 leading to a fewer number of cases.
+
+For what concerns deaths (Fig. 4), the divergence between the two countries curves in terms of 7-day moving average occurred right after the policy implementation (March 18). Also in this case, the worse situation in terms of daily deaths is the Swedish one, which reached a peak of almost 9 deaths per day per million around mid April. Conversely, Denmark reached a peak around April 8 with almost 3 deaths per million per day on average, and then the curve kept on decreasing. At the end of the considered period (June 3), Sweden had a 7-day average of 4 new daily deaths per million, whereas Denmark had less than 1. These trends clearly suggest that the NPIs adopted by Denmark contributed to reducing the spread of Covid-19 leading to a fewer number of deaths. Similarly to Fig. 3, also in this case the effects of restrictive policies on deaths are not identifiable right after the policy introduction, but later in time (approximately one week later). In particular, it seems that the effects on deaths were more immediate than those on cases: this insight was discussed in greater detail in the next sections. 
+
+As previously said, the choice of using the 7-day moving average was due to its capacity of smoothing the peaks and valleys that characterize the daily observations curves (Fig. 3, Fig. 4). In both graphs, the faded curves (i.e., daily observations) were particularly fluctuating and obstacle the understanding of the magnitude in terms of deaths and cases increase. This is mainly evident from Fig. 3, where peaks and valleys of cases are probably due to the fact that, on weekends, the laboratories processed a fewer number of tests, and consequently fewer cases were reported.
+
+Finally, the specification of three different dates is aimed at defining the pre- and post-treatment periods for the DiD implementation. This decision is supported by the evidence that policy effects can not be observed in the immediate short term, but after two or three weeks (Goodman-Bacon and Marcus, 2020; Bonacini et al., 2021; Juranek et al., 2021). Therefore, we artificially postponed the beginning of the treatment beyond the actual policies introduction (March 18), by considering two and three weeks later for cases (April 1 and April 8), and one and two weeks later for deaths (March 25 and April 1) as new time points. In the next section, some DiD models were presented to give a more formal estimate of the policy effects.
+
+# V. Model estimation
+
+In the absence of randomized controlled trials, we used observational data to test the efficacy of NPIs on the 7-day moving average of Covid-19 deaths and cases. As seen in the institutional background section, Denmark and Sweden share sufficient similarities so that, when faced with an exogenous policy intervention in one country, it is possible to consider them as a reasonable treatment group (Denmark) and control group (Sweden). In particular, the effect of NPIs (workplace closures and gatherings restrictions) on Covid-19 cases and deaths was investigated with two different approaches: 
+
+* **Standard DiD equation**: a simple regression equation is estimated with a single coefficient of interest, corresponding to the Average Treatment Effect on the Treated (ATT), that is the number of Covid-19 cases and deaths (in terms of 7-day moving average) avoided by the Danish government thanks to stricter restrictions. We expected this coefficient to be negative and significant. However, since the effects of a lockdown cannot be observed immediately after its introduction, we estimated this model using different values for the date defining the pre- and post-treatment period: March 18 (the actual implementation of the policy), April 1, and April 8 for cases; March 18, March 25, and April 1 for deaths. Each time the chosen time point was centered in a six-weeks window.
+* **Event study approach**: the main drawback of the standard DiD equation is that its coefficient of interest (ATT) is an average estimate. This does not allow to study in detail how the policy effects evolves over time. Nevertheless, by applying the event-study approach it was possible to inspect how the “lockdown effect” changes over time and the extent to which it remains significant.
+
+In order to be theoretically supported, the formal identification of a DiD model requires three main assumptions to be respected.
+
+##### Common trend assumption.
+The identification of the ATT using DiD relies on the assumption that, in the absence of the treatment (NPIs introduction), the treatment group (Denmark) and the control group (Sweden) would have experienced parallel trends in terms of 7-day moving average of Covid-19 cases and deaths. In order to confirm this assumption, the curves of deaths and cases should present a common trend in the period before the policy introduction. As previously stated, in this paper three main time specifications for each of the two outcomes were used to evaluate the NPIs effects.
+
+For what concerns cases (Fig. 3), in the first time window (Feb 26-March 18) the curves of the 7-day moving average followed very similar trends, even though the curve of Sweden was slightly more flatten than the Denmark one. This was probably due to the fact that Denmark performed more than twice as many tests per capita than Sweden (Juranek et al., 2021), leading to an underestimate of the Swedish positive cases in that period. In the following time windows, the two moving average curves presented parallel trends and a clear divergence occurred right after April 8. We assumed that, in the absence of the policy restrictions, the Denmark's curve of cases would have increased in parallel to the one of Sweden.\
+For what concerns deaths (Fig. 4), the curves (in terms of 7-day moving average), were very similar until the policies' introduction (March 18) and a clear divergence occurred around April 2. Also in this case, we assumed that in the absence of the NPIs introduction the curve of Denmark wouldn't have experienced such a divergence from the Swedish one and so that they would have had parallel trends in terms of deaths. 
+
+The fact that the divergence in the curves did not occurred exactly on March 18 but later (Fig. 3, Fig. 4), is because the incubation period for Covid-19 (i.e., the time between exposure to the virus and the onset of symptoms) is estimated to be between one and 14 days (WHO, 2021) leading us to suppose that the effect of policy restrictions cannot be evident close to the policy introduction date (March 18). Furthermore, the fact that the curves diverged before in deaths than in cases can be due to the different testing policies adopted by the countries that led to a delay and an underestimate of the true cases count in Sweden.
+
+\newpage
+
+##### Participation into the treatment is independent of idiosyncratic shocks. 
+In order to theoretically strengthen our DiD model, Denmark’s selection-into-treatment must be independent of any kind of idiosyncratic time-variant and state-specific shock (e.g. some events occurred in Denmark that affected the decision to undergo the treatment). Compliance with this assumption allows to avoid the risk of confounding the causal effect of the restrictive policies with some other time-variant state-specific shocks that may have occurred in the treated country before the policy introduction and that affected the number of Covid-19 deaths and cases as well. For example, if a healthcare system crisis had occurred in Denmark before the policies introduction leading to some shocks in the number of deaths and cases, this may have resulted in a biased estimate of the ATT of the policy. In such a case, the observed difference would have been not only due to the policy introduction but also to the alternative specific shock in Denmark. However, the “Ashenfelter’s Dip”, which is the phenomenon explaining the anticipation effects regarding future participation into the treatment (Bergemann et al., 2009), was not observed in Fig. 3 and Fig. 4 before March 18. Therefore, we assumed that the ATT estimate refer to the NPIs introduction and not to other idiosyncratic shocks. 
+
+##### Absence of systematic composition changes within each group. 
+In the considered time period (February-June, 2020), having seen a systematic change in the composition within each State (e.g. in terms of population, population density, etc.) was very unlikely. Furthermore, in the period under investigation, travel ban restrictions were implemented in both countries, so the possibility to observe systematic changes in the populations was further reduced. Unfortunately, we did not have daily observations of population characteristics such as its density or the share of elderly people to test this hypothesis more formally, but we agreed that the arguments provided above were enough to reasonably assert that this assumption was met.
+
+\newpage
+
+# Standard DiD equation
+
+In the current section, a simple Difference-in-Differences (DiD) model was estimated to identify the restrictions’ effect on deaths and cases due to Covid-19. In this regard, we defined the following equation:
+
+```{=latex}
+\begin{equation}
+y_{c,t} = \alpha + \gamma \cdot Treat_c + \lambda \cdot Post_t + \delta (Treat_c \cdot Post_t) + \varepsilon_{c,t}
+\end{equation}
+```
+
+Where $y_{c,t}$ denotes the outcome variable for country $c$ at time $t$, $Treat_c$ is a dummy identifying the treated country (1 for Denmark, 0 for Sweden), $Post_t$ is a dummy variable identifying the post-treatment observations, and $\delta$ is the coefficient of interest (the ATT). As already said, different specifications are used to define pre- and post-treatment periods ($t=t_0$) and the model is estimated with two different outcome variables: 7-day moving average of new daily cases and new daily deaths per million population. The results of the model, estimated through the `lm` R function, are shown in the table below.
+
+```{r}
+#Factorize the indicator
+dta$C2_Workplace <- factor(dta$C2_Workplace)
+
+#No measure = Recommended = 0; Required = 1
+levels(dta$C2_Workplace) <- c(0,0,1)
+
+#Create Treat and Post dummies
+dta$Post.1 <- factor(ifelse(dta$Time >= as.Date("2020-03-18"), 1, 0))
+dta$Post.2 <- factor(ifelse(dta$Time >= as.Date("2020-03-25"), 1, 0))
+dta$Post.3 <- factor(ifelse(dta$Time >= as.Date("2020-04-01"), 1, 0))
+dta$Post.4 <- factor(ifelse(dta$Time >= as.Date("2020-04-08"), 1, 0))
+dta$Treat <- factor(ifelse(dta$Country=='DNK', 1, 0))
+
+#Models for cases
+###Post-1
+smooth.cases.1 <- lm(new_cases_per_million_smoothed ~ Treat + Post.1 + Post.1*Treat, dta, subset=1:84)
+
+###Post-3
+smooth.cases.3 <- lm(new_cases_per_million_smoothed ~ Treat + Post.3 + Post.3*Treat, dta, subset=29:112)
+
+###Post-4
+smooth.cases.4 <- lm(new_cases_per_million_smoothed ~ Treat + Post.4 + Post.4*Treat, dta, subset=43:126)
+
+#Model for deaths
+###Post-1
+smooth.deaths.1 <- lm(new_deaths_per_million_smoothed ~ Treat + Post.1 + Post.1*Treat, dta, subset=1:84)
+
+###Post-2
+smooth.deaths.2 <- lm(new_deaths_per_million_smoothed ~ Treat + Post.2 + Post.2*Treat, dta, subset=15:98)
+
+###Post-3
+smooth.deaths.3 <- lm(new_deaths_per_million_smoothed ~ Treat + Post.3 + Post.3*Treat, dta, subset=29:112)
+
+#check summary() for coefficients
+```
+
+```{=latex}
+\setlength{\arrayrulewidth}{1.2pt}
+\begin{center}
+\begin{table}[h!]
+\begin{tabular}{ p{3cm} >{\centering}m{4cm} >{\centering}m{4cm} >{\centering\arraybackslash}m{4cm} } 
+ \hline \\
+ \textbf{Coefficient} & $\mathbf{t_0=March \ 18}$ & $\mathbf{t_0=April \ 1}$ & $\mathbf{t_0=April \ 8}$ \\[8pt]
+ \hline\\[1pt]
+ \multirow{2}{*}{$\delta \ for \ y = Cases$} & $-0.60$ & $-6.40 $ * & $-16.19$  ***\\ 
+ & (4.37) & (3.04) & (4.73)\\[5pt]  
+ $R^2$ & 0.54 & 0.83 & 0.55\\[5pt]
+ Observations & 84 & 84 & 84 \\[8pt]
+ \hline\\
+ \textbf{Coefficient} & $\mathbf{t_0=March \ 18}$ & $\mathbf{t_0=March \ 25}$ & $\mathbf{t_0=April \ 1}$ \\[8pt]
+ \hline\\[1pt]
+ \multirow{2}{*}{$\delta \ for \ y = Deaths$} & $-1.28$ * & $-3.16$ *** & $-4.96$ *** \\
+ & (0.51) & (0.66) & (0.51)\\[5pt] 
+ $R^2$ & 0.44 & 0.66 & 0.86\\[5pt]
+ Observations & 84 & 84 & 84 \\[8pt]
+ \hline
+\end{tabular}
+\caption{For each estimate, standard errors are reported in parentheses. Level of significance: * = p-value < 0.05; ** = p-value < 0.01; *** = p-value < 0.001. Each model considers a six-week window: three weeks before $t_0$ and three weeks afterwards, resulting in 84 daily observations.}
+\label{table:3}
+\end{table}
+\end{center}
+```
+```{=latex}
+\vspace{-10mm}
+```
+
+```{=latex}
+\vspace{3mm}
+```
+
+The first evidence is the $\delta$ for cases in the first specification ($t_{0}$ = March 18) to be not significant: this means that, in the first three weeks of workplace closure and gathering restrictions, there is no significant difference (in terms of cases) between Sweden and Denmark. However, the coefficient becomes significant when considering the beginning of the treatment after two weeks ($t_{0}$=April 1): this is reasonable since many studies suggest that lockdown effects can not be observed right after its introduction, but following two or three weeks (Goodman-Bacon and Marcus, 2020; Bonacini et al., 2021; Juranek et al., 2021). NPIs effects on cases are even stronger (and more significant) three weeks after the NPIs introduction ($t_{0}$=April 8). In fact, considering a 7-day moving average, the restrictive policies are estimated to have avoided around 16 cases per million per day in Denmark in the considered three-week period. 
+
+For what concerns deaths, the $\delta$ is significant since the first specification ($t_{0}$=March 18) and it remains so also in the following two. As for cases, the estimates increase (in absolute value) as the beginning of the treatment is artificially postponed to March 25 and April 1. Particularly, in the third specification ($t_{0}$=April 1) the coefficient $\delta$ reaches the highest value in absolute value, indicating that the NPIs introduction avoided on average 5 deaths per million in Denmark in that period.
+
+Even though we cannot disentangle the portion of effect attributed to workplace closure from the one attributed to gatherings restriction, this first standard DiD model confirmed that such restrictive measures had a significant role in reducing both the number of Covid-19 cases and deaths in Denmark as compared to Sweden. Furthermore, these results indicated that policy effects were more immediate on deaths than on cases and this insight was consequently investigated through the event-study approach and discussed in the *Limitation* paragraph.
+
+# Event-study approach
+
+As previously stated, the event-study approach allows to inspect how the “lockdown effect” changed over time and the extent to which it remained significant. Restrictions were heavier in Denmark than in Sweden until June 3, when the policies were placed on the same level (both countries forbade gatherings greater than 10 people). We estimated an event-study model using 7-day moving average observations up to June 3 in order to evaluate the joint effect of workplace closures and gatherings restrictions in the eleven weeks after the policies introduction (March 18). In this regard, we defined the following equation: 
+
+```{=latex}
+\begin{equation}
+y_{c,t,w} = \alpha + \gamma \cdot Treat_c + \sum_{w=2}^{W} (\lambda_w \cdot Weeek_w) + \sum_{w=1}^{W} (\delta_w \cdot TStatus_{c,t} \cdot Week_w) + \varepsilon_{c,t}
+\end{equation}
+```
+
+Where $y_{c,t,w}$ denotes the outcome variable for country $c$ at day $t$ and week $w$, $Treat_c$ is a dummy identifying the treated state (1 for Denmark, 0 for Sweden), $\lambda_w$ are the week-fixed effects coefficients, and $TStatus_{c,t}$ is a dummy equal to 1 if and only if country $c$ is treated at time $t$. Our coefficients of interest are the $\delta_w$'s, which capture the differences between the two states in the outcome variable caused by the treatment across eleven weeks from the beginning of the treatment. Estimates for $\delta_w$ and relative 95% C.I. are shown in the plots below. 
+
+```{=latex}
+\vspace{10mm}
+```
+
+```{r, fig.height=4, fig.width=10}
+#Week fixed effects
+dta$Week <- factor(rep(1:14, each=14))
+
+#CASES Event study
+event.study.cases <- lm(new_cases_per_million_smoothed ~ Treat + Week + Week*C2_Workplace - C2_Workplace, dta)
+coeff.cases <- as.data.frame(summary(event.study.cases)$coefficients[-c(1:15), c('Estimate', "Std. Error", "Pr(>|t|)")])
+coeff.cases$Inf.Limit <- coeff.cases$Estimate - (1.96 * coeff.cases$`Std. Error`)
+coeff.cases$Sup.Limit <- coeff.cases$Estimate + (1.96 * coeff.cases$`Std. Error`)
+
+###Plot
+ggplot(coeff.cases, aes(x=1:11, y=Estimate)) + geom_point(size=3, color='#BC412B') + 
+  geom_line(linetype='dashed', color='#BC412B') + geom_hline(yintercept = 0, linetype='dashed') +
+  geom_errorbar(aes(ymin=Inf.Limit, ymax=Sup.Limit), width=0.4, color='black', size=1, alpha=0.4) + 
+  theme_bw() +
+  labs(x='Weeks after March 18')
+```
+
+```{=latex}
+\emph{\textbf{Fig. 5}: Event-study for Covid-19 cases. The figure shows estimates from regression Eq. (2) with 95-percent confidence interval. The dots are the estimated coefficients for each week after the policy introduction (March 18) and the scattered line represents their trend over time. (Data source: ECDC, 2021)}
+```
+
+
+```{r, fig.height=4, fig.width=10}
+#DEATHS Event study
+event.study.deaths <- lm(new_deaths_per_million_smoothed ~ Treat + Week + Week*C2_Workplace - C2_Workplace, dta)
+coeff.deaths <- as.data.frame(summary(event.study.deaths)$coefficients[-c(1:15), c('Estimate', "Std. Error", "Pr(>|t|)")])
+coeff.deaths$Inf.Limit <- coeff.deaths$Estimate - (1.96 * coeff.deaths$`Std. Error`)
+coeff.deaths$Sup.Limit <- coeff.deaths$Estimate + (1.96 * coeff.deaths$`Std. Error`)
+
+###Plot
+ggplot(coeff.deaths, aes(x=1:11, y=Estimate)) + geom_point(size=3, color='#BC412B') + 
+  geom_line(linetype='dashed', color='#BC412B') + geom_hline(yintercept = 0, linetype='dashed') +
+  geom_errorbar(aes(ymin=Inf.Limit, ymax=Sup.Limit), width=0.5, color='black', size=1, alpha=0.5) +
+  theme_bw() +
+  labs(x='Weeks after March 18')
+```
+
+```{=latex}
+\emph{\textbf{Fig. 6}: Event-study for Covid-19 deaths. The figure shows estimates from regression Eq. (2) with 95-percent confidence interval. The dots are the estimated coefficients for each week after the policy introduction (March 18) and the scattered line represents their trend over time. (Data source: ECDC, 2021)}
+```
+
+
+```{=latex}
+\vspace{5mm}
+```
+
+The event-study for cases (Fig. 5) shows that, coherently with our findings in the previous paragraph, NPIs effect takes four weeks to become significant. Then, coefficient estimates constantly decrease until the eleventh week after the policies introduction ($\delta_{11}=-48.74$). This result indicates that, after eleven weeks from their introduction, workplace closures and gatherings restrictions avoided around 49 Covid-19 new daily cases per million (in terms of 7-day moving average).
+For what concerns the event-study for deaths (Fig. 6), the $\delta$ coefficients are significant and persistent for all the considered period. In particular, estimates plunge at the fifth week after the policies' introduction ($\delta_{5}=-7.14$) and then decrease (in absolute value) until the eleventh week ($\delta_{11}=-3.76$). This finding suggests that the policies avoided around 4 Covid-19 new daily deaths per millions (in terms of 7-day moving average) after eleven weeks.
+
+As stated in the previous sections, the curves of cases and deaths started diverging in different time points (Fig. 3, Fig. 4). In particular, the effect of the NPIs on deaths seemed to be more immediate than those on cases (Table \ref{table:3}). Moreover, while Swedish cases didn't decrease after reaching the peak, deaths did decrease after reaching the maximum in mid-April. This may explain why the event-study for cases (Fig. 5) presented a more persistent and stronger effect over time, than the one for deaths (Fig. 6). Such discrepancy between deaths and cases might be due to the different testing approaches of the two countries. While Denmark implemented a wider testing policy, Sweden was more selective in determining who could undertake Covid tests, potentially resulting in an underestimate of new daily cases for Sweden (Juranek et al., 2021). Nonetheless, both the event-studies proved the policies effect to be significant and persistent over time, strengthening our hypothesis that workplace closures and gathering restrictions significantly managed to flatten the curve of deaths and cases.\
+In Appendix I, the same DiD models were applied to the daily deaths and cases observations, instead of the 7-day moving average, leading to the same conclusions. 
+
+\newpage 
+
+# VI. Limitations
+
+In this paper the 7-day moving average of new daily Covid-19 cases was used as one of the two outcomes for estimating the DiD models. We agreed that it did not represent the optimal outcome variable for this kind of studies. As reported by Juranek et al. (2021), Denmark performed more than twice as many tests per capita than Sweden, which therefore could have caused the observed number of cases in Sweden to be an underestimate of the actual value. Other measures such as the positive rate (positive tests over the total number of tests) would have probably been a better metric, but unfortunately, there were no data available for the number of tests executed in Sweden for the analyzed period. Similarly, other informative metrics such as new daily hospitalizations or ICU admissions were not available for Denmark in the period under investigation. The different testing intensity could explain why the policies effect on cases (Fig. 5) was less immediate, in terms of significance, than the effect on deaths (Fig. 6). Therefore, our model probably *underestimates* the effect of restrictive policies on Covid-19 cases. 
+
+Additionally, in this paper different assumptions were presented in order to deal with the several policies put in place by the Scandinavian countries and to identify the effect of workplace closures and gathering restrictions alone. Namely, we assumed that the different policies in terms of international travel restrictions and school closures had a negligible effect on our outcome variables. Even though this could be seen as forcing, their effectiveness in limiting the spreading of Covid-19 is still debated in the literature and so we opted to exclude them from the DiD models. 
+
+Finally, the typical disadvantage of a DiD study resides in its limited external validity, which is further reduced when considering just one country as treated group and another one as control group, as in this case. In other words, what found in this study is not necessarily generalizable to the rest of the world.
+
+# VII. Conclusions
+
+During the first wave of Covid-19, Denmark pursued a relatively hard lockdown policy compared to a softer NPI strategy in Sweden, which was mainly based on community trust and individual decision-making. This paper investigated the effect of NPIs restrictions on Covid-19 deaths and cases in both countries. In particular, in our model, Sweden was used as the control group (non-restrictions), whereas Denmark was the treatment group (restrictions). Both the Scandinavian countries are very similar in terms of economics and healthcare capacity, and this allowed us to investigate the restrictions causal effect on Covid-19 deaths and cases using Difference-in-Differences (DiD) estimators. 
+The findings are as follows. First, despite the limitations highlighted in the previous section, we consider the evidence of this paper reasonable enough to support that restrictive policies such as workplace closures and gatherings restrictions did have a significant impact in reducing the number of daily cases and deaths related to Covid-19. In particular, the effect on deaths resulted to be more immediate than the one on cases, even though this may be due to the fewer tests performed in Sweden with respect to Denmark. Second, we found effects on deaths and cases to be persistently significant over time, suggesting that countries implementing such restrictive policies might have gained an advantage both in the short and in the medium term with respect to others that did not adopt such a constrained approach. 
+
+\newpage 
+
+# Appendix I
+
+In order to strengthen our findings, the DiD estimation presented in paragraph V was conducted using the daily number of Covid-19 cases and deaths instead of the 7-day moving average. The results of Eq. (1) are as follows.
+
+```{=latex}
+\vspace{4mm}
+```
+
+```{r}
+#Models for cases
+###Post-1
+std.cases.1 <- lm(new_cases_per_million ~ Treat + Post.1 + Post.1*Treat, dta, subset=1:84)
+
+###Post-2
+std.cases.3 <- lm(new_cases_per_million ~ Treat + Post.3 + Post.3*Treat, dta, subset=29:112)
+
+###Post-3
+std.cases.4 <- lm(new_cases_per_million ~ Treat + Post.4 + Post.4*Treat, dta, subset=43:126)
+
+#Model for deaths
+###Post-1
+std.deaths.1 <- lm(new_deaths_per_million ~ Treat + Post.1 + Post.1*Treat, dta, subset=1:84)
+
+###Post-2
+std.deaths.2 <- lm(new_deaths_per_million ~ Treat + Post.2 + Post.2*Treat, dta, subset=15:98)
+
+###Post-3
+std.deaths.3 <- lm(new_deaths_per_million ~ Treat + Post.3 + Post.3*Treat, dta, subset=43:126)
+
+#check summary() for coefficients
+```
+
+
+```{=latex}
+\setlength{\arrayrulewidth}{1.2pt}
+\begin{center}
+\begin{table}[h!]
+\begin{tabular}{ p{3cm} >{\centering}m{4cm} >{\centering}m{4cm} >{\centering\arraybackslash}m{4cm} } 
+ \hline \\
+ \textbf{Coefficient} & $\mathbf{t_0=March \ 18}$ & $\mathbf{t_0=April \ 1}$ & $\mathbf{t_0=April \ 8}$ \\[8pt]
+ \hline\\[1pt]
+ \multirow{2}{*}{$\delta \ for \ y = Cases$} & $0.68$ & $-8.91 $ ** & $-23.17$  ***\\ 
+ & (5.27) & (4.74) & (6.20)\\[5pt]  
+ $R^2$ & 0.53 & 0.63 & 0.37\\[5pt]
+ Observations & 84 & 84 & 84 \\[8pt]
+ \hline\\
+ \textbf{Coefficient} & $\mathbf{t_0=March \ 18}$ & $\mathbf{t_0=March \ 25}$ & $\mathbf{t_0=April \ 8}$ \\[8pt]
+ \hline\\[1pt]
+ \multirow{2}{*}{$\delta \ for \ y = Deaths$} & $-1.96$ ** & $-4.10$ *** & $-5.05$ *** \\
+ & (0.66) & (0.66) & (0.55)\\[5pt] 
+ $R^2$ & 0.49 & 0.74 & 0.87\\[5pt]
+ Observations & 84 & 84 & 84 \\[8pt]
+ \hline
+\end{tabular}
+\caption{For each estimate, standard errors are reported in parentheses. Level of significance: * = p-value < 0.05; ** = p-value < 0.01; *** = p-value < 0.001. Each model considers a six-week window: three weeks before $t_0$ and three weeks afterwards, resulting in 84 daily observations.}
+\label{table:4}
+\end{table}
+\end{center}
+```
+
+
+```{=latex}
+\vspace{-10mm}
+```
+
+Also in this case the $\delta$ for cases in the first specification ($t_0$ = March 18) is not significant, meaning that in the first three weeks of restrictions there was no significant difference (in terms of daily cases) between Sweden and Denmark (Table \ref{table:4}). However, the coefficient becomes significant when considering the beginning of the treatment after two weeks ($t_{0}$=April 1). NPIs effects on cases are even stronger (and more significant) when considering $t_{0}$=April 8, three weeks after the NPIs introduction: these policies are estimated to have avoided around 23 cases per million per day in Denmark in the considered three-week period. 
+For what concerns deaths, $\delta$ remained significant for all the three specifications and, similarly to cases, the highest coefficient for deaths was in the last specification (April 1).\
+Furthermore, it is worth mentioning that the R-squared values in Table \ref{table:4} are lower than those in  Table \ref{table:3}: this means that use of the 7-day moving average contributed to better explain the proportion of the variation in the dependent variable (Cases) that was predictable from the independent variable (Policies introduction). \
+The change of output from 7-day moving average to daily observations strengthen our findings that NPIs introduction did have a significant and positive impact on deaths and cases in Denmark. Below are presented the results for Eq. (2).
+
+```{=latex}
+\vspace{4mm}
+```
+
+```{r, fig.height=3, fig.width=9}
+#CASES Event study
+event.study.cases <- lm(new_cases_per_million ~ Treat + Week + Week*C2_Workplace - C2_Workplace, dta)
+coeff.cases <- as.data.frame(summary(event.study.cases)$coefficients[-c(1:15), c('Estimate', "Std. Error", "Pr(>|t|)")])
+coeff.cases$Inf.Limit <- coeff.cases$Estimate - (1.96 * coeff.cases$`Std. Error`)
+coeff.cases$Sup.Limit <- coeff.cases$Estimate + (1.96 * coeff.cases$`Std. Error`)
+
+###Plot
+ggplot(coeff.cases, aes(x=1:11, y=Estimate)) + geom_point(size=3, color='#BC412B') + 
+  geom_line(linetype='dashed', color='#BC412B') + geom_hline(yintercept = 0, linetype='dashed') +
+  geom_errorbar(aes(ymin=Inf.Limit, ymax=Sup.Limit), width=0.4, color='black', size=1, alpha=0.4) + 
+  theme_bw() + theme(plot.caption = element_text(hjust=0)) +
+  labs(x='Weeks after March 18')
+```
+
+```{=latex}
+\emph{\textbf{Fig. 7}: Event-study for Covid-19 daily cases. The figure shows estimates from regression Eq. (2) with 95-percent confidence interval. The dots are the estimated coefficients for each week after the policy introduction (March 18) and the scattered line represents their trend over time. (Data source: ECDC, 2021)}
+```
+
+
+```{=latex}
+\vspace{4mm}
+```
+
+
+```{r, fig.height=3, fig.width=9}
+#DEATHS Event study
+event.study.deaths <- lm(new_deaths_per_million ~ Treat + Week + Week*C2_Workplace - C2_Workplace, dta)
+coeff.deaths <- as.data.frame(summary(event.study.deaths)$coefficients[-c(1:15), c('Estimate', "Std. Error", "Pr(>|t|)")])
+coeff.deaths$Inf.Limit <- coeff.deaths$Estimate - (1.96 * coeff.deaths$`Std. Error`)
+coeff.deaths$Sup.Limit <- coeff.deaths$Estimate + (1.96 * coeff.deaths$`Std. Error`)
+
+###Plot
+ggplot(coeff.deaths, aes(x=1:11, y=Estimate)) + geom_point(size=3, color='#BC412B') + 
+  geom_line(linetype='dashed', color='#BC412B') + geom_hline(yintercept = 0, linetype='dashed') +
+  geom_errorbar(aes(ymin=Inf.Limit, ymax=Sup.Limit), width=0.5, color='black', size=1, alpha=0.5) +
+  theme_bw() +
+  labs(x='Weeks after March 18') +
+  theme(plot.caption = element_text(hjust=0))
+
+```
+
+```{=latex}
+\emph{\textbf{Fig. 8}: Event-study for Covid-19 daily deaths. The figure shows estimates from regression Eq. (2) with 95-percent confidence interval. The dots are the estimated coefficients for each week after the policy introduction (March 18) and the scattered line represents their trend over time. (Data source: ECDC, 2021)}
+```
+
+
+```{=latex}
+\vspace{5mm}
+```
+
+The event-study for cases (Fig. 7) shows that, similarly to Fig. 5, NPIs effect takes four weeks to become significant. The coefficient estimates constantly increase (in absolute value) until the eleventh week after the policies introduction ($\delta_{11}=-54.49$). This result indicates that workplace closures and gatherings restrictions avoided around 50 daily cases in Denmark in June. For what concerns the event-study for deaths (Fig. 8), the $\delta$ coefficients are significant and persistent for all the considered period. As in Fig. 6, estimates reach the peak (in absolute value) at the fifth week after the policies introduction ($\delta_{5}=-7.15$) and then decrease until the eleventh week ($\delta_{11}=-3.35$). 
+
+Notably, the confidence interval bands are much larger that the ones obtained when using the smoothed outcome, confirming that using the moving average allowed us to get rid of the seasonality noise and obtain more precise estimates. This is coherent with the fact that also standard errors reported in Table \ref{table:4} are larger than the ones in Table \ref{table:3}. \
+Also in this case, the change of output from 7-day moving average to daily observations did strengthen our findings that NPIs introduction did have a significant and positive impact on deaths and cases in Denmark over time. 
+
+# Appendix II
+
+In the current appendix, the graphical representation of the 7-day moving average for Cases in the absence of the data correction (explained in paragraph IV) is presented. It is noticeable that, using the original data, the curve of Denmark would have presented an abnormal bump before March 18 due to the sudden increase in the daily cases registration that regarded only three days before the policy introduction (Fig. 9). Since such anomalous behaviour was not noticed in Denmark's daily observations after March 18, we agreed by considering this sudden increase as an adjustable data noise.
+
+```{=latex}
+\vspace{5mm}
+```
+
+```{r, fig.height=4, fig.width=10}
+ggplot(dta, aes(x=Time,y=new_cases_per_million_noisy,color=Country)) +
+  geom_point(alpha=0.35) + geom_line(alpha=0.35) + theme_bw()+
+  labs(y='New cases per million') +
+geom_vline(xintercept = as.Date("2020-03-18"), linetype='dashed', color='blue', size=0.7) +
+  geom_vline(xintercept = as.Date("2020-04-01"), linetype='dashed', color='red', size=0.7) +
+  geom_vline(xintercept = as.Date("2020-04-08"), linetype='dashed', color='black', size=0.7) +
+  scale_x_continuous(breaks=as.Date(c('2020-03-01', '2020-03-18', '2020-04-01', 
+                                      '2020-04-08', '2020-05-01', '2020-06-01')), 
+                     labels=c('Mar', 'Mar18', 'Apr1', 'Apr8', 'May', 'Jun')) +
+  geom_line(aes(y=new_cases_per_million_smoothed_noisy, color=Country), size=1)
+```
+
+```{=latex}
+\emph{\textbf{Fig. 9}: Daily Covid-19 cases with 7-day moving average over the period Feb 26-Jun 3, 2020. The 7-day moving average of cases is represented by the scattered lines, whereas the daily cases by the faded ones. The blue vertical line corresponds to the policies introduction (March 18), the red vertical line two weeks later (April 1), and the black vertical line three weeks later (April 8). (Data source: ECDC, 2021)}
+```
+
+In this appendix it is demonstrated that, in the absence of the data correction, the coefficient estimates of Eq.(1) and Eq.(2) would have provided very similar results in terms of NPIs efficacy. This is noticeable from Table \ref{table:5}, which reports the coefficients for Eq.(1) when using non-corrected data. In particular, the standard DiD regression was estimated on smoothed cases (i.e., 7-day moving average cases), and on daily cases. As expected, the results confirm that the effect of policies on cases started to be significant from the second specification ($t_0$=April 8). \
+The event-study estimated using noisy data is presented in Fig. 10 and Fig. 11. The former presents the estimates for the 7-day moving-average cases, whereas the latter for the daily cases. Also in this case, the results are quite similar to Fig. 5. The only noticeable difference is that, when considering daily cases instead of smoothed ones (Fig. 11), the coefficients start to be significant after week 3, whereas in Fig. 5 the significance started after week 4. 
+
+```{r}
+#Models for smoothed noisy cases
+###Post-1
+smooth.cases.1 <- lm(new_cases_per_million_smoothed_noisy ~ Treat + Post.1 + Post.1*Treat, dta, subset=1:84)
+
+###Post-3
+smooth.cases.3 <- lm(new_cases_per_million_smoothed_noisy ~ Treat + Post.3 + Post.3*Treat, dta, subset=29:112)
+
+###Post-4
+smooth.cases.4 <- lm(new_cases_per_million_smoothed_noisy ~ Treat + Post.4 + Post.4*Treat, dta, subset=43:126)
+
+#Models for noisy cases
+###Post-1
+std.cases.1 <- lm(new_cases_per_million_noisy ~ Treat + Post.1 + Post.1*Treat, dta, subset=1:84)
+
+###Post-3
+std.cases.3 <- lm(new_cases_per_million_noisy ~ Treat + Post.3 + Post.3*Treat, dta, subset=29:112)
+
+###Post-4
+std.cases.4 <- lm(new_cases_per_million_noisy ~ Treat + Post.4 + Post.4*Treat, dta, subset=43:126)
+
+#check summary() for coefficients
+```
+
+```{=latex}
+\setlength{\arrayrulewidth}{1.2pt}
+\begin{center}
+\begin{table}[h!]
+\begin{tabular}{ p{3cm} >{\centering}m{4cm} >{\centering}m{4cm} >{\centering\arraybackslash}m{4cm} } 
+ \hline \\
+ \textbf{Coefficient} & $\mathbf{t_0=March \ 18}$ & $\mathbf{t_0=April \ 1}$ & $\mathbf{t_0=April \ 8}$ \\[8pt]
+ \hline\\[1pt]
+ \multirow{2}{*}{$\delta \ for \ smoothed \ cases$} & $-2.15$ & $-8.52 $ * & $-16.47$  ***\\ 
+ & (4.54) & (3.02) & (4.70)\\[5pt]  
+ $R^2$ & 0.50 & 0.82 & 0.55\\[5pt]
+ Observations & 84 & 84 & 84 \\[8pt]
+ \hline\\
+ \multirow{2}{*}{$\delta \ for \ daily cases$} & $-1.43$ & $-11.04$ *  & $-23.17$ *** \\
+ & (5.67) & (4.91) & (6.20)\\[5pt] 
+ $R^2$ & 0.47 & 0.60 & 0.36\\[5pt]
+ Observations & 84 & 84 & 84 \\[8pt]
+ \hline
+\end{tabular}
+\caption{For each estimate, standard errors are reported in parentheses. Level of significance: * = p-value < 0.05; ** = p-value < 0.01; *** = p-value < 0.001. Each model considers a six-week window: three weeks before $t_0$ and three weeks afterwards, resulting in 84 daily observations.}
+\label{table:5}
+\end{table}
+\end{center}
+```
+```{=latex}
+\vspace{-20mm}
+```
+
+```{r, fig.height=4, fig.width=10}
+#CASES Event study
+event.study.cases <- lm(new_cases_per_million_smoothed_noisy ~ Treat + Week + Week*C2_Workplace - C2_Workplace, dta)
+coeff.cases <- as.data.frame(summary(event.study.cases)$coefficients[-c(1:15), c('Estimate', "Std. Error", "Pr(>|t|)")])
+coeff.cases$Inf.Limit <- coeff.cases$Estimate - (1.96 * coeff.cases$`Std. Error`)
+coeff.cases$Sup.Limit <- coeff.cases$Estimate + (1.96 * coeff.cases$`Std. Error`)
+
+###Plot
+ggplot(coeff.cases, aes(x=1:11, y=Estimate)) + geom_point(size=3, color='#BC412B') + 
+  geom_line(linetype='dashed', color='#BC412B') + geom_hline(yintercept = 0, linetype='dashed') +
+  geom_errorbar(aes(ymin=Inf.Limit, ymax=Sup.Limit), width=0.4, color='black', size=1, alpha=0.4) + 
+  theme_bw() + theme(plot.caption = element_text(hjust=0)) +
+  labs(x='Weeks after March 18')
+```
+
+```{=latex}
+\emph{\textbf{Fig. 10}: Event-study for Covid-19 daily cases (moving average and noisy data). The figure shows estimates from regression Eq. (2) with 95-percent confidence interval. The dots are the estimated coefficients for each week after the policy introduction (March 18) and the scattered line represents their trend over time. (Data source: ECDC, 2021)}
+```
+
+```{=latex}
+\vspace{5mm}
+```
+
+```{r, fig.height=4, fig.width=10}
+#CASES Event study
+event.study.cases <- lm(new_cases_per_million_noisy ~ Treat + Week + Week*C2_Workplace - C2_Workplace, dta)
+coeff.cases <- as.data.frame(summary(event.study.cases)$coefficients[-c(1:15), c('Estimate', "Std. Error", "Pr(>|t|)")])
+coeff.cases$Inf.Limit <- coeff.cases$Estimate - (1.96 * coeff.cases$`Std. Error`)
+coeff.cases$Sup.Limit <- coeff.cases$Estimate + (1.96 * coeff.cases$`Std. Error`)
+
+###Plot
+ggplot(coeff.cases, aes(x=1:11, y=Estimate)) + geom_point(size=3, color='#BC412B') + 
+  geom_line(linetype='dashed', color='#BC412B') + geom_hline(yintercept = 0, linetype='dashed') +
+  geom_errorbar(aes(ymin=Inf.Limit, ymax=Sup.Limit), width=0.4, color='black', size=1, alpha=0.4) + 
+  theme_bw() + theme(plot.caption = element_text(hjust=0)) +
+  labs(x='Weeks after March 18')
+```
+
+```{=latex}
+\emph{\textbf{Fig. 11}: Event-study for Covid-19 daily cases (noisy data). The figure shows estimates from regression Eq. (2) with 95-percent confidence interval. The dots are the estimated coefficients for each week after the policy introduction (March 18) and the scattered line represents their trend over time. (Data source: ECDC, 2021)}
+```
+
+\newpage
+
+# References
+
+* Askim J., Bergström T. (2021). *Between lockdown and calm down. Comparing the COVID-19 responses of Norway and Sweden*, Local Government Studies. 
+* Bergemann A., Fitzenberger B., Speckesser S. (2009). *Evaluating the Dynamic Employment Effects of Training Programs in East Germany Using Conditional Difference-in-Differences*. Journal of Applied Econometrics, 24(5), 797–823.
+* Blundell, R., Dias, M. C. (2009). *Alternative Approaches to Evaluation in Empirical Microeconomics*. The Journal of Human Resources, 44(3), 565–640. 
+* Bonacini L., Gallo G., Patriarca F., (2021), *Identifying policy challenges of COVID-19 in hardly reliable data and judging the success of lockdown measures*, Journal of Population Economics 34, 275-301. 
+* Conyon M. J., He L., Thomsen S. (2020). *Lockdowns and Covid-19 Deaths in Scandinavia. Covid Economics Vetted and Real-Time Papers*, Issue 26,17-42. \url{https://cepr.org/file/9614/download?token=gkU2Wi40}
+* ECDC (2021), Covid-19 situation update for the EU/EEA. \url{https://www.ecdc.europa.eu/en} (Accessed on December 5 2021)
+* Errett N., Lauren M., Rutkow L. (2020), *An integrative review of the limited evidence on international travel bans as an emerging infectious disease disaster control measure*. Journal of Emergency Management. 2020 Jan/Feb; 18(1): 7-14. 
+* Goodman-Bacon A., Marcus J. (2020). *Using difference-in-differences to identify causal effects of COVID-19 policies*. DIW Discussion Papers, No. 1870, Deutsches Institut für Wirtschaftsforschung (DIW), Berlin.
+* Iwata, K., Doi, A., & Miyakoshi, C. (2020). *Was school closure effective in mitigating coronavirus disease 2019 (COVID-19)? Time series analysis using Bayesian inference*. International Journal of Infectious Diseases, 99, 57-61
+* Juranek S., Zoutman F. T. (2021). *The effect of non-pharmaceutical interventions on the demand for health care and on mortality: evidence from COVID-19 in Scandinavia*. Journal of Population Economics 34, 1299-1320. 
+* Kristiansen IS, Pedersen KM (2000), *Health care systems in the Nordic countries–more similarities than differences?*. Tidsskrift Norske Laegeforen Tidsskrift Praktisk Med Raekke 120(17): 2023–2029. 
+* Lyttkens C., Christiansen T., H¨akkinen U., Kaarboe O., Sutton M., Welander A. (2016). *The core of the Nordic health care system is not empty*. Nordic J Health Econ 4(1):7–27.
+* Müller O., Razum O., Jahn A. (2021). *Effects of non-pharmaceutical interventions against COVID-19 on the incidence of other diseases*. The Lancet Regional Health - Europe Volume 6.
+* OECD (2021), Doctors (indicator).
+* OECD (2021), Elderly population (indicator - Accessed on 10 December 2021)
+* OECD (2021), Hospital beds (indicator - Accessed on 5 December 2021)
+* OECD (2021), Hospital beds - Acute care. \url{https://www.oecd.org/coronavirus/en/data-insights/hospital-beds-acute-care} (Accessed on 10 Decemeber 2021)
+* OECD (2021), Life expectancy at birth (indicator - Accessed on 10 December 2021)
+* OECD (2021), Nurses (indicator - Accessed on 10 December 2021)
+* OECD (2021), Population (indicator - Accessed on 10 December 2021)
+* Paterlini M. (2020). *‘Closing borders is ridiculous’: the epidemiologist behind Sweden’s controversial coronavirus strategy*. Nature 580, 574. 
+* Plümper, T., E. Neumayer. (2020). *Lockdown Policies and the Dynamics of the First Wave of the Sars-CoV-2 Pandemic in Europe*. Journal of European Public Policy.
+* Ritchie H., Mathieu E., Rodés-Guirao L., Appel C., Giattino C., Ortiz-Ospina E., Hasell J., Macdonald B., Beltekian D., Roser M. (2020). *Coronavirus Pandemic (COVID-19)*. Published online at OurWorldInData.org. 
+* Shahid, Z., Kalayanamitra, R., McClafferty, B., Kepko, D., Ramgobin, D., Patel, R., ... & Jain, R. (2020). *COVID‐19 and older adults: what we know*. Journal of the American Geriatrics Society, 68(5), 926-929.
+* Thomas H., Anania J., Angrist N., Boby T., Cameron-Blake E., Di Folco M., Ellen L., Goldszmidt R., Hallas L., Kira B., Luciano M., Majumdar S., Nagesh R., Petherick A., Phillips T., Tatlow H., Webster S., Wood A., Zhang Y. (2021). *Variation in Government Responses to COVID-19*. Version 12.0, Blavatnik School of Government Working Paper. 11 June 2021. Available: \url{www.bsg.ox.ac.uk/covidtracker}
+* UNWTO (2021). UNWTO Tourism Dashboard. \url{https://www.unwto.org/international-tourism-and-covid-19} (Accessed on 5 December 2021)
+* Viner, R. M., Russell, S. J., Croker, H., Packer, J., Ward, J., Stansfield, C., ... & Booy, R. (2020). *School closure and management practices during coronavirus outbreaks including COVID-19: a rapid systematic review*. The Lancet Child & Adolescent Health, 4(5), 397-404.
+* Wang, C. J., Ng, C. Y., & Brook, R. H. (2020). *Response to COVID-19 in Taiwan: big data analytics, new technology, and proactive testing*. Jama, 323(14), 1341-1342.
+* World Bank (2021), “Current health expenditure (%GDP)”. \url{https://data.worldbank.org/indicator/SH.XPD.CHEX.GD.ZS?end=2018&start=2000&view=map} (Accessed on 10 December 2021)
+* World Bank (2021). “GDP per capita, PPP (current international $) - Sweden, Denmark”. \url{https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD?locations=SE-DK} (Accessed on 10 December 2021)
+* World Bank (2021), “Population density (People per sq. km of land area) - Sweden, Denmark”. \url{https://data.worldbank.org/indicator/EN.POP.DNST?end=2020&locations=SE-DK&start=2020}
+* Yan B., Zhang X., Wu L., Zhu H., Chen B. (2020). *Why Do Countries Respond Differently to COVID-19? A Comparative Study of Sweden, China, France, and Japan*. The American Review of Public Administration. 2020;50(6-7):762-769.
